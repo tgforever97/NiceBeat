@@ -18,8 +18,8 @@ trait RectangleObjectOfGame extends ObjectOfGame{
   final def getWidth = width
   final def getHeight = height
 
-  private[this] def collisionWidth = width + collisionOffset
-  private[this] def collisionHeight = height + collisionOffset
+  private[this] def collisionWidth = width - collisionOffset
+  private[this] def collisionHeight = height - collisionOffset
 
 
 

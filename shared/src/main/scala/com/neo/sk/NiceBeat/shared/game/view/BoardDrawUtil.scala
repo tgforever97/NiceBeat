@@ -31,7 +31,7 @@ trait BoardDrawUtil{ this:GameContainerClientImpl =>
   }
 
   protected def drawBall(ball:Ball,offsetTime: Long):Unit = {
-    val position = ball.getPosition4Animation(boundary,offsetTime)
+    val position = ball.getPosition4Animation(boundary,brickMap.filter(b => b._2.boardId == ball.boardId).values.toList,boardMap(ball.boardId),offsetTime)
     ctx.beginPath()
     ctx.setFill("#00FFFF")
     ctx.arc(position.x * canvasUnit, position.y * canvasUnit, ball.getRadius * canvasUnit,0,360)

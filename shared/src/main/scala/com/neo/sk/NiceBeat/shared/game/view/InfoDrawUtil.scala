@@ -65,7 +65,7 @@ trait InfoDrawUtil {this:GameContainerClientImpl =>
     ctx.setTextAlign("left")
     ctx.setTextBaseline("top")
     ctx.setFont(s"Helvetica", "normal", 20 * canvasUnit)
-    ctx.fillText(info, 350, 180)
+    ctx.fillText(info, 450, 180)
   }
 
 }

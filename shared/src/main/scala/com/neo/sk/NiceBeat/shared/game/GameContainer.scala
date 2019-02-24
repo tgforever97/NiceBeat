@@ -196,27 +196,23 @@ trait GameContainer{
     }
   }
 
-  //fixme 移动需要修改
   protected def ballMove():Unit = {
     ballMap.toList.sortBy(_._1).map(_._2).foreach{ ball =>
       println(s"ball ${ball.position}")
       println(s"${ball.direction}")
-      val bricks = brickMap.filter(b => b._2.boardId == ball.boardId).values
+      val bricks = brickMap.filter(b => b._2.boardId == ball.boardId).values.toList
       val board = boardMap(ball.boardId)
       bricks.foreach{t =>
-          ball.checkCollisionObject(t,bricksCallBack(ball))}
-      ball.checkCollisionObject(board,boardCallBack(ball))
+          ball.checkCollisionBrick(t,bricksCallBack(ball))}
+      ball.checkCollisionBoard(board,boardCallBack(ball))
       ball.checkCollisionWall(boundary,wallCallBack(ball))
-      ball.move(boundary,deadBallCallBack)
+      ball.move(boundary,bricks,board,deadBallCallBack)
     }
   }
 
   protected def boardCallBack(ball: Ball)(board: Board):Unit = {
 
-    println(s"brick $collisionIdx")
-    val positionBoard = board.getBoardState().position
-    val positionBall = ball.getBallState().position
-//    ball.setBallPosition(positionBoard,positionBall,board.width,board.height)
+    println(s"board $collisionIdx")
     val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
     collisionIdx += 1
     val direction = -angle*Pi/180
@@ -226,9 +222,6 @@ trait GameContainer{
   protected def bricksCallBack(ball: Ball)(b:Brick):Unit = {
 
     println(s"brick $collisionIdx")
-    val positionBrick = b.getBrickState().position
-    val positionBall = ball.getBallState().position
-//    ball.setBallPosition(positionBrick,positionBall,b.width,b.height)
     val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
     collisionIdx += 1
     val direction = angle*Pi/180
@@ -239,21 +232,21 @@ trait GameContainer{
 
   protected def wallCallBack(ball:Ball):Unit = {
 
-    if(ball.getBallState().position.x + ball.radius == boundary.x){
+    if(ball.getBallState().position.x + ball.radius + 2 >= boundary.x){
       println(s"right wall $collisionIdx")
       val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
       collisionIdx += 1
       val direction = angle*Pi/180
       ball.setBallDirection(direction)
     }
-    else if(ball.getBallState().position.x - ball.radius == 0){
+    else if(ball.getBallState().position.x - ball.radius - 2 <= 0){
       println(s"left wall $collisionIdx")
       val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
       collisionIdx += 1
       val direction = (180-angle)*Pi/180
       ball.setBallDirection(direction)
     }
-    else if(ball.getBallState().position.y - ball.radius == 0){
+    else if(ball.getBallState().position.y - ball.radius - 2 <= 0){
       println(s"up wall $collisionIdx")
       val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
       collisionIdx += 1

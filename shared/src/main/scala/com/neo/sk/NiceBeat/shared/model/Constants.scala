@@ -35,6 +35,12 @@ object Constants {
     val directionRange = directionListUp.length
   }
 
+  object CollisionType{
+    val boardCollision = 1
+    val brickCollision = 2
+    val wallCollision = 3
+  }
+
   object GameAnimation{
     val ballHitAnimationFrame = 8
     val brickDestroyAnimationFrame = 12
