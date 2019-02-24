@@ -106,12 +106,14 @@ abstract class GameHolder(name: String) extends NetworkInfo {
 
       case GameState.stop =>
         dom.document.getElementById("input_mask_id").asInstanceOf[dom.html.Div].focus()
+        gameContainerOpt.foreach(_.drawGameStop("Defeat"))
         dom.window.cancelAnimationFrame(nextFrame)
         Shortcut.cancelSchedule(timer)
         ping()
 
       case GameState.win =>
         dom.document.getElementById("input_mask_id").asInstanceOf[dom.html.Div].focus()
+        gameContainerOpt.foreach(_.drawGameStop("Victory"))
         dom.window.cancelAnimationFrame(nextFrame)
         Shortcut.cancelSchedule(timer)
         ping()

@@ -1681,3 +1681,55 @@ java.net.BindException: Address already in use
 2019-02-24 12:08:54.134 38866 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-17]  - 玩家：1--remember to come back!!!Map(1 -> List())
 2019-02-24 12:08:54.227 38959 INFO  com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-17]  - boardId=100 action=UserPressKeyUp(100,317,37,21) is no valid,because the board is not exist
 2019-02-24 12:08:58.993 43725 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-17]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes idle behavior.
+2019-02-24 12:15:37.515 1792 INFO  akka.event.slf4j.Slf4jLogger [tankDemoSystem-akka.actor.default-dispatcher-2]  - Slf4jLogger started
+2019-02-24 12:15:37.624 1901 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [main]  - RoomManager start...
+2019-02-24 12:15:37.631 1908 DEBUG com.neo.sk.NiceBeat.core.UserManager$ [main]  - UserManager start...
+2019-02-24 12:15:37.635 1912 INFO  com.neo.sk.NiceBeat.Boot$ [tankDemoSystem-akka.actor.default-dispatcher-3] Boot$(akka://tankDemoSystem) - Starting.
+2019-02-24 12:15:46.664 10941 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-3]  - akka://tankDemoSystem/user/userManager/UserActor-1 is starting...
+2019-02-24 12:15:46.667 10944 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-3]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes init behavior.
+2019-02-24 12:15:46.745 11022 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-8]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes idle behavior.
+2019-02-24 12:15:46.860 11137 INFO  com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-7]  - userActor joingame
+2019-02-24 12:15:46.869 11146 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-7]  - Room Actor-1 start...
+2019-02-24 12:15:46.873 11150 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-7]  - now roomInUse:Map(1 -> List((1,1)))
+2019-02-24 12:15:47.099 11376 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-7]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes play behavior.
+2019-02-24 12:15:48.396 12673 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - preExecuteUserAction fame=15, systemFrame=16
+2019-02-24 12:15:49.596 13873 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - preExecuteUserAction fame=27, systemFrame=28
+2019-02-24 12:15:54.592 18869 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-19]  - preExecuteUserAction fame=77, systemFrame=78
+2019-02-24 12:15:56.098 20375 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-10]  - preExecuteUserAction fame=92, systemFrame=93
+2019-02-24 12:15:56.692 20969 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-10]  - preExecuteUserAction fame=98, systemFrame=99
+2019-02-24 12:16:02.598 26875 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-8]  - preExecuteUserAction fame=157, systemFrame=158
+2019-02-24 12:16:03.612 27889 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-19]  - preExecuteUserAction fame=167, systemFrame=168
+2019-02-24 12:16:06.810 31087 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-2]  - preExecuteUserAction fame=199, systemFrame=200
+2019-02-24 12:16:16.399 40676 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-10]  - user 1 LeftRoom
+2019-02-24 12:16:16.399 40676 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-19]  - 玩家：1--remember to come back!!!Map(1 -> List())
+2019-02-24 12:16:23.370 47647 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes idle behavior.
+2019-02-24 12:16:23.371 47648 INFO  com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - userActor joingame
+2019-02-24 12:16:23.371 47648 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - now roomInUse:Map(1 -> List((1,1)))
+2019-02-24 12:16:23.394 47671 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-2]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes play behavior.
+2019-02-24 12:17:03.491 87768 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-2]  - user 1 LeftRoom
+2019-02-24 12:17:03.492 87769 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-10]  - 玩家：1--remember to come back!!!Map(1 -> List())
+2019-02-24 12:17:10.444 94721 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-10]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes idle behavior.
+2019-02-24 12:17:10.446 94723 INFO  com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-10]  - userActor joingame
+2019-02-24 12:17:10.447 94724 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-10]  - now roomInUse:Map(1 -> List((1,1)))
+2019-02-24 12:17:10.491 94768 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-19]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes play behavior.
+2019-02-24 12:17:25.388 109665 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-7]  - user 1 LeftRoom
+2019-02-24 12:17:25.388 109665 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-2]  - 玩家：1--remember to come back!!!Map(1 -> List())
+2019-02-24 12:18:49.844 768  INFO  akka.event.slf4j.Slf4jLogger [tankDemoSystem-akka.actor.default-dispatcher-3]  - Slf4jLogger started
+2019-02-24 12:18:49.952 876  DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [main]  - RoomManager start...
+2019-02-24 12:18:49.966 890  DEBUG com.neo.sk.NiceBeat.core.UserManager$ [main]  - UserManager start...
+2019-02-24 12:18:49.970 894  INFO  com.neo.sk.NiceBeat.Boot$ [tankDemoSystem-akka.actor.default-dispatcher-3] Boot$(akka://tankDemoSystem) - Starting.
+2019-02-24 12:18:55.404 6328 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - akka://tankDemoSystem/user/userManager/UserActor-1 is starting...
+2019-02-24 12:18:55.407 6331 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes init behavior.
+2019-02-24 12:18:55.477 6401 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-18]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes idle behavior.
+2019-02-24 12:18:55.598 6522 INFO  com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-8]  - userActor joingame
+2019-02-24 12:18:55.604 6528 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - Room Actor-1 start...
+2019-02-24 12:18:55.609 6533 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - now roomInUse:Map(1 -> List((1,1)))
+2019-02-24 12:18:55.831 6755 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-8]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes play behavior.
+2019-02-24 12:19:00.843 11767 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-8]  - user 1 LeftRoom
+2019-02-24 12:19:00.843 11767 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-18]  - 玩家：1--remember to come back!!!Map(1 -> List())
+2019-02-24 12:19:04.505 15429 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-23]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes idle behavior.
+2019-02-24 12:19:04.505 15429 INFO  com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-23]  - userActor joingame
+2019-02-24 12:19:04.505 15429 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-8]  - now roomInUse:Map(1 -> List((1,1)))
+2019-02-24 12:19:04.520 15444 DEBUG com.neo.sk.NiceBeat.core.UserActor$ [tankDemoSystem-akka.actor.default-dispatcher-23]  - akka://tankDemoSystem/user/userManager/UserActor-1 becomes play behavior.
+2019-02-24 12:19:12.230 23154 DEBUG com.neo.sk.NiceBeat.core.RoomManager$ [tankDemoSystem-akka.actor.default-dispatcher-18]  - 玩家：1--remember to come back!!!Map(1 -> List())
+2019-02-24 12:19:12.230 23154 DEBUG com.neo.sk.NiceBeat.core.RoomActor$ [tankDemoSystem-akka.actor.default-dispatcher-9]  - user 1 LeftRoom

@@ -216,6 +216,7 @@ object UserActor {
 
               case t:NBGameEvent.RestartGame =>
                 val newStartTime = System.currentTimeMillis()
+                ctx.self ! JoinGame(t.name)
                 switchBehavior(ctx,"idle",idle(uId,newStartTime,frontActor))
 
 
