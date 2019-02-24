@@ -56,7 +56,12 @@ abstract class GameHolder(name: String) extends NetworkInfo {
     val curTime = System.currentTimeMillis()
     val offsetTime = curTime - logicFrameTime
     drawGame(offsetTime)
-//    if(gameState == GameState.stop) gameContainerOpt.foreach(_.drawGameStop())
+    gameState match {
+      case GameState.stop => gameContainerOpt.foreach(_.drawGameStop("Defeat"))
+      case GameState.win => gameContainerOpt.foreach(_.drawGameStop("Victory"))
+      case GameState.loadingPlay => gameContainerOpt.foreach(_.drawGameLoading())
+      case _  =>
+    }
     nextFrame = dom.window.requestAnimationFrame(gameRender())
   }
 
@@ -93,13 +98,19 @@ abstract class GameHolder(name: String) extends NetworkInfo {
     gameState match {
       case GameState.loadingPlay =>
         println(s"等待同步数据")
-        gameContainerOpt.foreach(_.drawGameLoading())
+
       case GameState.play =>
         gameContainerOpt.foreach(_.update())
         logicFrameTime = System.currentTimeMillis()
         ping()
 
       case GameState.stop =>
+        dom.document.getElementById("input_mask_id").asInstanceOf[dom.html.Div].focus()
+        dom.window.cancelAnimationFrame(nextFrame)
+        Shortcut.cancelSchedule(timer)
+        ping()
+
+      case GameState.win =>
         dom.document.getElementById("input_mask_id").asInstanceOf[dom.html.Div].focus()
         dom.window.cancelAnimationFrame(nextFrame)
         Shortcut.cancelSchedule(timer)

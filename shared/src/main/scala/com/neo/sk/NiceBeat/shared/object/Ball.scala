@@ -86,7 +86,6 @@ case class Ball(
   }
 
 
-
   // 检测是否弹球有碰撞到，碰撞到，执行回调函数
   def checkCollisionObject[T <: ObjectOfGame](o:T,collisionCallBack:T => Unit):Unit = {
     if(this.isIntersects(o)){

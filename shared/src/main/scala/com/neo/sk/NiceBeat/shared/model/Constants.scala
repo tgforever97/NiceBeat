@@ -32,6 +32,7 @@ object Constants {
     val directionListUp = List(45,60,75,90,105,120,135)
     val directionListLeft = List(135,150,165,180,195,210,225)
     def getRandomDirection(random: Random) = random.nextInt(directionListUp.size).toByte
+    val directionRange = directionListUp.length
   }
 
   object GameAnimation{
@@ -47,7 +48,7 @@ object Constants {
     val play = 2
     val stop = 3
     val loadingPlay = 4
-    val leave = 6
+    val win = 6
   }
 
   final val WindowView = Point(192,108)

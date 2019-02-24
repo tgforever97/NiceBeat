@@ -34,11 +34,11 @@ case class Brick(
   def getBrickState():BrickState = BrickState(bId,boardId,curBlood,position,colorType)
 
   def attackedDamage(d: Int): Unit = {
-    curBlood -= d
+    this.curBlood -= d
   }
 
   def isLived: Boolean = {
-    if(curBlood > 0) true
+    if(this.curBlood > 0) true
     else false
   }
 

@@ -48,8 +48,8 @@ object NBGameEvent {
   final case class WsMsgErrorRsp(errCode:Int, msg:String) extends WsMsgServer
   final case class WsSuccess(userName:String) extends WsMsgServer
   final case class StartGame(userName:String) extends WsMsgFront
-  final case class CreateRoom(roomId:Option[Long],password:Option[String]) extends WsMsgFront
   final case class YourInfo(userId:String,userName:String, boardId:Int,ballId:Int,config:NiceBeatConfigImpl) extends WsMsgServer
+  final case class ReachPersonLimit(config:NiceBeatConfigImpl) extends WsMsgServer
 
   @deprecated
   //用户胜利失败消息

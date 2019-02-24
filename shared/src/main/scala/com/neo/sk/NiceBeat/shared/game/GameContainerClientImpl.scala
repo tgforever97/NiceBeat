@@ -139,10 +139,6 @@ case class GameContainerClientImpl(
     super.handleUserJoinRoomEvent(e)
   }
 
-  override protected def handleUserReliveEvent(e: NBGameEvent.UserRelive): Unit = {
-    super.handleUserReliveEvent(e)
-  }
-
 
   protected def handleGameContainerAllState(gameContainerAllState: GameContainerAllState) = {
     systemFrame = gameContainerAllState.f
@@ -276,7 +272,6 @@ case class GameContainerClientImpl(
     }
     gameEventMap -= systemFrame
     actionEventMap -= systemFrame
-    followEventMap -= systemFrame
     systemFrame += 1
   }
 
@@ -290,6 +285,10 @@ case class GameContainerClientImpl(
       val bricks = brickMap.values.filter(brick => brick.boardId == board._1)
       Score(board._2.userId,board._2.name,board._2.boardId,bricks.size.toByte)
     }.toList
+  }
+
+  override def handleGameStart = {
+    super.handleGameStart
   }
 
   def drawGame(time: Long, networkLatency: Long, dataSizeList: List[String]): Unit = {

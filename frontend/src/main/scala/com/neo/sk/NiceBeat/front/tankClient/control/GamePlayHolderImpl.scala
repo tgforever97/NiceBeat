@@ -109,19 +109,19 @@ class GamePlayHolderImpl(name: String) extends GameHolder(name) {
         println(s"玩家信息${e}")
         timer = Shortcut.schedule(gameLoop, e.config.frameDuration / e.config.playRate)
         gameContainerOpt = Some(GameContainerClientImpl(drawFrame, ctx, e.config, e.userId, e.boardId, e.ballId,  e.userName, canvasBoundary, canvasUnit))
+        setGameState(GameState.play)
+
+      case e:NBGameEvent.ReachPersonLimit =>
+        println(s"reach person")
+        gameContainerOpt.foreach(_.handleGameStart)
+//        setGameState(GameState.play)
 
       case e: NBGameEvent.YouAreKilled =>
-
-        /**
-          * 死亡重玩
-          **/
-        gameContainerOpt.foreach(_.drawGameStop(s"Defeat"))
         setGameState(GameState.stop)
 
       case e:NBGameEvent.YouWin =>
 
-        gameContainerOpt.foreach(_.drawGameStop(s"Victory"))
-        setGameState(GameState.stop)
+        setGameState(GameState.win)
 
       case e: NBGameEvent.SyncGameState =>
         gameContainerOpt.foreach(_.receiveGameContainerState(e.state))

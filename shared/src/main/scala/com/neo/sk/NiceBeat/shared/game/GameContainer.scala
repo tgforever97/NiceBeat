@@ -38,14 +38,14 @@ trait GameContainer{
   var systemFrame:Long = 0L //系统帧数
   val boardMap = mutable.HashMap[Int,Board]() //boardId -> board
   var ballMap = mutable.HashMap[Int,Ball]() //ballId -> ball
-  val brickMap = mutable.HashMap[Int,Brick]() //brickId -> brick
+  var brickMap = mutable.HashMap[Int,Brick]() //brickId -> brick
   val boardMoveAction = mutable.HashMap[Int,mutable.HashSet[Byte]]() //boardId -> pressed direction key code
   val random = new Random(System.currentTimeMillis())
   val Pi = math.Pi.toFloat
+  var collisionIdx = 0
 
   protected val gameEventMap = mutable.HashMap[Long,List[GameEvent]]() //frame -> List[GameEvent] 待处理的事件 frame >= curFrame
   protected val actionEventMap = mutable.HashMap[Long,List[UserActionEvent]]() //frame -> List[UserActionEvent]
-  protected val followEventMap = mutable.HashMap[Long,List[FollowEvent]]()  // 记录游戏逻辑中产生事件
 
   final protected def handleUserJoinRoomEvent(l:List[UserJoinRoom]) :Unit = {
     l foreach handleUserJoinRoomEvent
@@ -68,18 +68,16 @@ trait GameContainer{
     }
   }
 
-//  protected def handleGameStart = {
-//    if(boardMap.size == 2){
-//      ballMap.foreach(ball =>
-//      ball._2.changeMoveTrue)
-//    }
-//  }
+  protected def handleGameStart = {
+      ballMap.foreach(ball =>
+      ball._2.changeMoveTrue)
+  }
 
   final protected def handleUserReliveEvent(l:List[UserRelive]):Unit = {
     l foreach handleUserReliveEvent
   }
 
-  protected def handleUserReliveEvent(e:UserRelive):Unit = {
+  final protected def handleUserReliveEvent(e:UserRelive):Unit = {
     val board = e.boardState
     if(!boardMap.exists(_._1 == board.boardId)){
       boardMap.put(board.boardId,board)
@@ -90,7 +88,7 @@ trait GameContainer{
     }
   }
 
-  protected def handleUserReliveNow() = {
+  final protected def handleUserReliveNow() = {
     gameEventMap.get(systemFrame).foreach{events =>
       handleUserReliveEvent(events.filter(_.isInstanceOf[UserRelive]).map(_.asInstanceOf[UserRelive]).reverse)
     }
@@ -100,6 +98,7 @@ trait GameContainer{
     boardMoveAction.remove(e.boardId)
     boardMap.remove(e.boardId)
     ballMap = ballMap.filterNot(b => b._2.boardId == e.boardId)
+    brickMap = brickMap.filterNot(b => b._2.boardId == e.boardId)
   }
 
   final protected def handleUserLeftRoom(l:List[UserLeftRoom]) :Unit = {
@@ -146,26 +145,28 @@ trait GameContainer{
     brickMap.get(e.brickId).foreach{brick =>
       if(brick.isLived){
         brick.attackedDamage(e.damage)
+      }else{
+        addGameEvent(NBGameEvent.BrickRemove(brick.bId,brick.getBrickState().position,brick.boardId,systemFrame))
       }
     }
   }
 
-  protected final def handleBrickAttacked(es:List[BrickAttacked]) :Unit = {
+  final protected def handleBrickAttacked(es:List[BrickAttacked]) :Unit = {
     es foreach handleBrickAttacked
   }
 
   final protected def handleBrickAttackedNow() = {
-    followEventMap.get(systemFrame).foreach{ events =>
+    gameEventMap.get(systemFrame).foreach{ events =>
       handleBrickAttacked(events.filter(_.isInstanceOf[BrickAttacked]).map(_.asInstanceOf[BrickAttacked]).reverse)
     }
   }
 
-  protected def handleGenerateBrick(e:BrickGenerate) :Unit = {
+  final protected def handleGenerateBrick(e:BrickGenerate) :Unit = {
     val newBrick = Brick(config,e.brick.bId,e.brick.boardId,e.brick.blood,e.brick.position,e.brick.colorType)
     brickMap.put(newBrick.bId,newBrick)
   }
 
-  protected final def handleGenerateBrick(es:List[BrickGenerate]) :Unit = {
+  final protected def handleGenerateBrick(es:List[BrickGenerate]) :Unit = {
     es foreach handleGenerateBrick
   }
 
@@ -176,16 +177,14 @@ trait GameContainer{
   }
 
   protected def handleBrickRemove(e:BrickRemove) :Unit = {
-    brickMap.get(e.brickId).foreach{b =>
-      brickMap.remove(b.bId)
-    }
+    brickMap.remove(e.brickId)
   }
 
   protected final def handleBrickRemove(es:List[BrickRemove]) :Unit = {
     es foreach handleBrickRemove
   }
 
-  protected def handleBrickRemoveNow()={
+  protected final def handleBrickRemoveNow()={
     gameEventMap.get(systemFrame).foreach{events=>
       handleBrickRemove(events.filter(_.isInstanceOf[BrickRemove]).map(_.asInstanceOf[BrickRemove]).reverse)
     }
@@ -197,6 +196,7 @@ trait GameContainer{
     }
   }
 
+  //fixme 移动需要修改
   protected def ballMove():Unit = {
     ballMap.toList.sortBy(_._1).map(_._2).foreach{ ball =>
       println(s"ball ${ball.position}")
@@ -213,45 +213,50 @@ trait GameContainer{
 
   protected def boardCallBack(ball: Ball)(board: Board):Unit = {
 
-    println(s"brick collision")
+    println(s"brick $collisionIdx")
     val positionBoard = board.getBoardState().position
     val positionBall = ball.getBallState().position
 //    ball.setBallPosition(positionBoard,positionBall,board.width,board.height)
-    val angle = BallDirection.directionListUp(BallDirection.getRandomDirection(random))
+    val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
+    collisionIdx += 1
     val direction = -angle*Pi/180
     ball.setBallDirection(direction)
   }
 
   protected def bricksCallBack(ball: Ball)(b:Brick):Unit = {
 
-    println(s"brick collision")
+    println(s"brick $collisionIdx")
     val positionBrick = b.getBrickState().position
     val positionBall = ball.getBallState().position
 //    ball.setBallPosition(positionBrick,positionBall,b.width,b.height)
-    val angle = BallDirection.directionListUp(BallDirection.getRandomDirection(random))
+    val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
+    collisionIdx += 1
     val direction = angle*Pi/180
     ball.setBallDirection(direction)
-    val event2 = NBGameEvent.BrickAttacked(b.bId,ball.bId,ball.damage,systemFrame)
-    addFollowEvent(event2)
+    val event = NBGameEvent.BrickAttacked(b.bId,ball.bId,ball.damage,systemFrame)
+    addGameEvent(event)
   }
 
   protected def wallCallBack(ball:Ball):Unit = {
 
     if(ball.getBallState().position.x + ball.radius == boundary.x){
-      println(s"right wall collision")
-      val angle = BallDirection.directionListLeft(BallDirection.getRandomDirection(random))
+      println(s"right wall $collisionIdx")
+      val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
+      collisionIdx += 1
       val direction = angle*Pi/180
       ball.setBallDirection(direction)
     }
     else if(ball.getBallState().position.x - ball.radius == 0){
-      println(s"left wall collision")
-      val angle = BallDirection.directionListLeft(BallDirection.getRandomDirection(random))
+      println(s"left wall $collisionIdx")
+      val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
+      collisionIdx += 1
       val direction = (180-angle)*Pi/180
       ball.setBallDirection(direction)
     }
     else if(ball.getBallState().position.y - ball.radius == 0){
-      println(s"up wall collision")
-      val angle = BallDirection.directionListUp(BallDirection.getRandomDirection(random))
+      println(s"up wall $collisionIdx")
+      val angle = BallDirection.directionListUp(collisionIdx % BallDirection.directionRange)
+      collisionIdx += 1
       val direction = angle*Pi/180
       ball.setBallDirection(direction)
     }
@@ -259,7 +264,6 @@ trait GameContainer{
 
   protected def deadBallCallBack(ball: Ball):Unit = {
     println(s"remove ball")
-    ballMap.remove(ball.bId)
   }
 
   protected final def objectMove():Unit = {
@@ -282,24 +286,16 @@ trait GameContainer{
     }
   }
 
-  protected final def addFollowEvent(event:FollowEvent):Unit = {
-    followEventMap.get(event.frame) match {
-      case Some(events) => followEventMap.put(event.frame, event :: events)
-      case None => followEventMap.put(event.frame,List(event))
-    }
-  }
-
   //更新本桢的操作
   def update():Unit = {
     handleUserLeftRoomNow()
-//    handleGameStart
     objectMove()
     handleUserActionEventNow()
     handleBrickAttackedNow()
     handleBrickRemoveNow()
     handleGenerateBrickNow()
     handleUserJoinRoomEventNow()
-    handleUserReliveNow()
+    //    handleUserReliveNow()
     clearEventWhenUpdate()
   }
 

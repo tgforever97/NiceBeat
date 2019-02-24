@@ -157,6 +157,7 @@ object UserActor {
 
         case JoinRoomSuccess(board,ball,config,`uId`,uName,roomActor) =>
           //给前端Actor同步当前桢数据，然后进入游戏Actor
+          println(s"join room success")
           frontActor ! NBGameEvent.Wrap(NBGameEvent.YourInfo(uId,uName,board.boardId,ball.bId,config).asInstanceOf[NBGameEvent.WsMsgServer].fillMiddleBuffer(sendBuffer).result())
           switchBehavior(ctx,"play",play(uId,uName,board,ball,startTime,frontActor,roomActor))
 
@@ -179,7 +180,7 @@ object UserActor {
           switchBehavior(ctx,"init",init(uId),InitTime,TimeOut("init"))
 
         case unknowMsg =>
-          log.warn(s"got unknown msg: $unknowMsg")
+          log.warn(s"idle got unknown msg: $unknowMsg")
           Behavior.same
       }
     }
@@ -226,12 +227,12 @@ object UserActor {
           }
 
         case DispatchMsg(m) =>
-          if(m.asInstanceOf[NBGameEvent.Wrap].isKillMsg) {
-            roomManager ! RoomManager.LeftRoomByKilled(uId,uName,board.boardId)
-          }
-          if(m.asInstanceOf[NBGameEvent.Wrap].isWinMsg) {
+          if(m.asInstanceOf[NBGameEvent.Wrap].isKillMsg || m.asInstanceOf[NBGameEvent.Wrap].isWinMsg) {
             roomManager ! RoomManager.LeftRoom(uId,uName,board.boardId)
           }
+//          if(m.asInstanceOf[NBGameEvent.Wrap].isWinMsg) {
+//            roomManager ! RoomManager.LeftRoom(uId,uName,board.boardId)
+//          }
           frontActor ! m
           Behaviors.same
 

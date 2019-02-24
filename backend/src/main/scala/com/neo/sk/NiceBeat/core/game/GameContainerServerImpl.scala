@@ -84,7 +84,6 @@ case class GameContainerServerImpl(
         brickMap.remove(e.brickId)
         //砖块消失
         val event = NBGameEvent.BrickRemove(e.brickId,brick.getBrickState().position,brick.boardId,systemFrame)
-        log.debug(s"brick remove ${e.brickId}")
         dispatch(event)
         addGameEvent(event)
         val impactByteOpt = if(random.nextInt(10) < 5) Some(random.nextInt(2).toByte + 1) else None
@@ -116,8 +115,11 @@ case class GameContainerServerImpl(
     Ball(config,ballId,boardId,direction,config.getBallSpeed,config.getBallInitPosition,config.getBallDamage(1),true)
   }
 
-  override protected def handleUserJoinRoomEventNow() = {
+  override def handleGameStart = {
+    super.handleGameStart
+  }
 
+  override protected def handleUserJoinRoomEventNow() = {
       justJoinUser.foreach {
         case (userId, name, ref) =>
           val board = generateBoard(userId,name)
@@ -134,11 +136,10 @@ case class GameContainerServerImpl(
           }
       }
       justJoinUser = Nil
-
   }
 
+
   def leftGame(userId: String, name: String, boardId: Int) = {
-    log.info(s"user leave $userId")
     val event = NBGameEvent.UserLeftRoom(userId,name,boardId,systemFrame)
     addGameEvent(event)
     dispatch(event)
@@ -169,7 +170,6 @@ case class GameContainerServerImpl(
   override protected def clearEventWhenUpdate(): Unit = {
     gameEventMap -= systemFrame - 1
     actionEventMap -= systemFrame - 1
-    followEventMap -= systemFrame - 1
     systemFrame += 1
   }
 

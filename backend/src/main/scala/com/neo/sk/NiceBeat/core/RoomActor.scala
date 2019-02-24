@@ -45,11 +45,13 @@ object RoomActor {
 
   case class LeftRoom(uid: String, uName:String, boardId: Int, uidSet: List[(String, String)], roomId: Long) extends Command with RoomManager.Command
 
-  case class LeftRoomByKilled(uid: String, name: String, boardId: Int) extends Command with RoomManager.Command
+//  case class LeftRoomByKilled(uid: String, name: String, boardId: Int) extends Command with RoomManager.Command
 
   final case class ChildDead[U](name: String, childRef: ActorRef[U]) extends Command with RoomManager.Command
 
   case object GameLoop extends Command
+
+  case object ReachPersonLimit extends Command
 
   case class TankRelive(userId: String, tankIdOpt: Option[Int], name: String) extends Command
 
@@ -88,7 +90,7 @@ object RoomActor {
               dispatchTo(subscribersMap)
             )
             timer.startPeriodicTimer(GameLoopKey, GameLoop, (gameContainer.config.frameDuration / gameContainer.config.playRate).millis)
-            idle(0l, roomId, Nil, Nil, mutable.HashMap[Long, Set[String]](), subscribersMap, gameContainer, 0L)
+            idle(0l, roomId, Nil, Nil, mutable.HashMap[Long, Set[String]](), subscribersMap, gameContainer, 0L, false)
         }
     }
   }
@@ -101,8 +103,8 @@ object RoomActor {
             userGroup: mutable.HashMap[Long, Set[String]],
             subscribersMap: mutable.HashMap[String, ActorRef[UserActor.Command]],
             gameContainer: GameContainerServerImpl,
-            tickCount: Long
-          )(
+            tickCount: Long,
+            isPlaying:Boolean)(
             implicit timer: TimerScheduler[Command],
             sendBuffer: MiddleBufferInJvm
           ): Behavior[Command] = {
@@ -115,13 +117,21 @@ object RoomActor {
             case Some(s)=> userGroup.update(index%classify,s+uid)
             case None => userGroup.put(index%classify,Set(uid))
           }
-          idle(index + 1, roomId, (uid, boardIdOpt, startTime, userActor) :: justJoinUser, (uid, boardIdOpt, name, startTime, index%classify) :: userMap,userGroup, subscribersMap, gameContainer, tickCount)
+          idle(index + 1, roomId, (uid, boardIdOpt, startTime, userActor) :: justJoinUser, (uid, boardIdOpt, name, startTime, index%classify) :: userMap,userGroup, subscribersMap, gameContainer, tickCount,isPlaying)
+
+
+        case ReachPersonLimit =>
+//          timer.startPeriodicTimer(GameLoopKey, GameLoop, (gameContainer.config.frameDuration / gameContainer.config.playRate).millis)
+          gameContainer.handleGameStart
+          dispatch(subscribersMap)(NBGameEvent.ReachPersonLimit(gameContainer.config.getNiceBeatConfigImpl()))
+          Behaviors.same
 
         case WebSocketMsg(uid, boardId, req) =>
           gameContainer.receiveUserAction(req)
           Behaviors.same
 
         case LeftRoom(uid, name, boardId, uidSet, roomId) =>
+          log.debug(s"user $uid LeftRoom")
           subscribersMap.remove(uid)
           gameContainer.leftGame(uid, name, boardId)
           userMap.filter(_._1==uid).foreach{u=>
@@ -135,27 +145,28 @@ object RoomActor {
             if (roomId > 1l) {
               Behaviors.stopped
             } else {
-              idle(index,roomId, justJoinUser.filter(_._1 != uid), userMap.filter(_._1 != uid),userGroup, subscribersMap, gameContainer, tickCount)
+              idle(index,roomId, justJoinUser.filter(_._1 != uid), userMap.filter(_._1 != uid),userGroup, subscribersMap, gameContainer, tickCount, isPlaying)
             }
           } else {
-            idle(index,roomId, justJoinUser.filter(_._1 != uid), userMap.filter(_._1 != uid), userGroup,subscribersMap, gameContainer, tickCount)
+            idle(index,roomId, justJoinUser.filter(_._1 != uid), userMap.filter(_._1 != uid), userGroup,subscribersMap, gameContainer, tickCount, isPlaying)
           }
 
-        case LeftRoomByKilled(uid, boardId, name) =>
-          log.debug("LeftRoomByKilled")
-          subscribersMap.remove(uid)
-          userMap.filter(_._1==uid).foreach{u=>
-            userGroup.get(u._5) match {
-              case Some(s)=> userGroup.update(u._5,s-u._1)
-              case None=> userGroup.put(u._5,Set.empty)
-            }
-          }
-          idle(index,roomId, justJoinUser.filter(_._1 != uid), userMap.filter(_._1 != uid), userGroup, subscribersMap, gameContainer, tickCount)
-
+//        case LeftRoomByKilled(uid,name,boardId) =>
+//          log.debug("LeftRoomByKilled")
+//          subscribersMap.remove(uid)
+//          gameContainer.leftGame(uid,name,boardId)
+//          userMap.filter(_._1==uid).foreach{u=>
+//            userGroup.get(u._5) match {
+//              case Some(s)=> userGroup.update(u._5,s-u._1)
+//              case None=> userGroup.put(u._5,Set.empty)
+//            }
+//          }
+//          idle(index,roomId, justJoinUser.filter(_._1 != uid), userMap.filter(_._1 != uid), userGroup, subscribersMap, gameContainer, tickCount)
+//          ctx.self ! LeftRoom(uid,name,boardId)
+//          Behaviors.same
 
         case GameLoop =>
-
-          gameContainer.update()
+            gameContainer.update()
           //remind 错峰发送
           val state = gameContainer.getGameContainerState()
           userGroup.get(tickCount%classify).foreach{s=>
@@ -179,7 +190,7 @@ object RoomActor {
 
             }
           }
-          idle(index,roomId, Nil, userMap,userGroup, subscribersMap, gameContainer, tickCount + 1)
+          idle(index,roomId, Nil, userMap,userGroup, subscribersMap, gameContainer, tickCount + 1, isPlaying)
 
         case SyncFrame4NewComer(userId, tickCount) =>
           if(tickCount < 21){//新加入的玩家前2s高频率同步帧号

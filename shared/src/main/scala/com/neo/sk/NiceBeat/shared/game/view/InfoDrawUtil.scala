@@ -11,8 +11,6 @@ import com.neo.sk.NiceBeat.shared.game.GameContainerClientImpl
 trait InfoDrawUtil {this:GameContainerClientImpl =>
 
   def drawGameLoading():Unit = {
-    ctx.setFill("rgb(0,0,0)")
-    ctx.fillRec(0, 0, canvasSize.x * canvasUnit, canvasSize.y * canvasUnit)
     ctx.setFill("rgb(250, 250, 250)")
     ctx.setTextAlign("left")
     ctx.setTextBaseline("top")
